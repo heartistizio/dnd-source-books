@@ -1,0 +1,31 @@
+{
+    "private": true,
+    "name": "dnd-source-books",
+    "version": "0.0.0",
+    "homepage": "https://github.com/heartistizio/dnd-source-books",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/heartistizio/dnd-source-books.git"
+    },
+    "license": "UNLICENSED",
+    "bugs": {
+        "url": "https://github.com/heartistizio/dnd-source-books/issues"
+    },
+    "scripts": {
+        "clean": "rimraf lib",
+        "build": "npm run clean && ts-node src",
+        "lint-staged": "lint-staged",
+        "prepare": "husky install",
+        "prettier": "prettier"
+    },
+    "devDependencies": {
+        "@types/fs-extra": "^9.0.9",
+        "@types/node": "^14.14.37",
+        "fs-extra": "^9.1.0",
+        "husky": "^6.0.0",
+        "prettier": "^2.2.1",
+        "rimraf": "^3.0.2",
+        "ts-node": "^9.1.1",
+        "typescript": "^4.2.3"
+    }
+}

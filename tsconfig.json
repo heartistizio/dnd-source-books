@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "commonjs",
+    "sourceMap": true ,
+    "outDir": "build",
+    "removeComments": true,
+    "noEmit": true ,
+    "strict": true,
+    "noImplicitAny": true,
+    "baseUrl": "src",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true 
+  },
+  "include": ["src"],
+  "exclude": ["build"]
+}

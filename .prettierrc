@@ -1,0 +1,16 @@
+{
+    "bracketSpacing": true,
+    "singleQuote": true,
+    "trailingComma": "all",
+    "printWidth": 80,
+    "endOfLine": "lf",
+    "overrides": [
+      {
+        "files": ["*.{md,yml,yaml}"],
+        "options": {
+          "printWidth": 100,
+          "proseWrap": "always"
+        }
+      }
+    ]
+  }
