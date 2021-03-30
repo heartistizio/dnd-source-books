@@ -23,8 +23,11 @@ Properties
 # VIM backup files
 *~
 
-# folder
+# converted assets
 lib
+
+# assets
+assets/*
 
 # IntelliJ based IDEs
 .idea
