@@ -7,6 +7,7 @@ configuration, as there is no error handling as of now. Feel free to fork or con
 
 - [Table of Contents](#table-of-contents)
 - [Getting started](#getting-started)
+- [Scripts](#scripts)
 
 ## Getting Started
 
