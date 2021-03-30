@@ -14,26 +14,55 @@ const convertMiles = (value: number): [number, string] => [
   'kilometers',
 ];
 
-const convertFeet = (
-  value: number,
-  radial = false,
-  radialSuffix = '',
-): [number, string] => {
-  if (value > 5) {
-    const convertedValue = Math.ceil(value / 5) * 1.5;
-    const unit = radial ? `-meter${radialSuffix}` : ' meters';
-    return [convertedValue, unit];
-  }
-
-  if (value === 5) {
-    const unit = radial ? `-meter${radialSuffix}` : ' meter';
-    return [1.5, unit];
-  }
-
-  const unit = radial ? `centimeter${radialSuffix}` : ' centimeters';
-
-  return [value * 30, unit];
+const specialValuesMap: Record<string, number> = {
+  '5': 1.5,
+  '6': 1.8,
+  '7': 2.1,
 };
+
+const convertSpecialFeetValuesToMeters = (
+  value: number,
+  radial: boolean,
+  radialSuffix: string,
+  template = specialValuesMap,
+): [number, string] => [
+  specialValuesMap[String(value)],
+  radial ? `-meter${radialSuffix}` : ' meter',
+];
+
+const convertFeetToMeters = (
+  value: number,
+  radial: boolean,
+  radialSuffix: string,
+): [number, string] => {
+  const specialValue = convertSpecialFeetValuesToMeters(
+    value,
+    radial,
+    radialSuffix,
+  );
+
+  if (specialValue) {
+    return specialValue;
+  }
+
+  const convertedValue = Math.ceil(value / 5) * 1.5;
+  const unit = radial ? `-meter${radialSuffix}` : ' meters';
+  return [convertedValue, unit];
+};
+
+const convertFeetToCentimeters = (
+  value: number,
+  radial: boolean,
+  radialSuffix: string,
+): [number, string] => [
+  value * 30,
+  radial ? `centimeter${radialSuffix}` : ' centimeters',
+];
+
+const convertFeet = (value: number, radial = false, radialSuffix = '') =>
+  value > 5
+    ? convertFeetToMeters(value, radial, radialSuffix)
+    : convertFeetToCentimeters(value, radial, radialSuffix);
 
 const convertSquareFeet = (value: number): [number, string] => [
   value / 10,
