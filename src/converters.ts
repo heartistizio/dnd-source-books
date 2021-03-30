@@ -7,10 +7,12 @@ import {
   ItemWithBounds,
   ItemWithFlags,
   ItemWithFlagsAndFeatures,
+  Units,
+  Converter,
 } from './types';
 
-const convertMiles = (value: number): [number, string] => [
-  value * 1.5,
+const convertMiles = (value: string): [number, string] => [
+  convertToNumeric(value) * 1.5,
   'kilometers',
 ];
 
@@ -64,29 +66,66 @@ const convertFeet = (value: number, radial = false, radialSuffix = '') =>
     ? convertFeetToMeters(value, radial, radialSuffix)
     : convertFeetToCentimeters(value, radial, radialSuffix);
 
-const convertSquareFeet = (value: number): [number, string] => [
-  value / 10,
+const convertSquareFeet = (value: string | number): [number, string] => [
+  convertToNumeric(value) / 10,
   'square meters',
 ];
 
-const convertInches = (value: number): [number, string] => [
+const convertInches = (value: string): [number, string] => [
   convertToNumeric(value) * 2.5,
   'centimeters',
 ];
-const convertGallons = (value: number): [number, string] => [
+const convertGallons = (value: string): [number, string] => [
   convertToNumeric(value) * 4,
   'liters',
 ];
 
-const imperialToMetric = {
+const convertTupleToNumeric = (value: string) =>
+  value
+    .split(' ')
+    .map((value) => parseInt(value))
+    .filter((element) => !isNaN(element));
+
+const convertTuplePounds = (
+  value: string,
+): [number, string] | [string, number, string, number, string] => {
+  const [first, second] = convertTupleToNumeric(value);
+
+  return second
+    ? [
+        'between ',
+        Math.floor(convertToNumeric(first) / 2.2),
+        ' and ',
+        Math.floor(convertToNumeric(second) / 2.2),
+        ' kilogram',
+      ]
+    : [Math.floor(convertToNumeric(first) / 2.2), ' kilogram'];
+};
+
+const imperialToMetric: Record<Units, Converter> = {
   miles: convertMiles,
   'square feet': convertSquareFeet,
-  feet: convertFeet,
-  'foot-radius': (value: number) => convertFeet(value, true, '-radius'),
-  'foot-high': (value: number) => convertFeet(value, true, '-high'),
-  foot: (value: number) => convertFeet(value, true),
+  feet: (value: string) => convertFeet(convertToNumeric(value)),
+  'foot-radius': (value: string) =>
+    convertFeet(convertToNumeric(value), true, '-radius'),
+  'foot-high': (value: string) =>
+    convertFeet(convertToNumeric(value), true, '-high'),
+  foot: (value: string) => convertFeet(convertToNumeric(value), true),
   inch: convertInches,
   gallons: convertGallons,
+  pound: convertTuplePounds,
+};
+
+const unitToRegExp: Record<Units, RegExp> = {
+  miles: /[0-9]+[ -]+miles/g,
+  'square feet': /[0-9]+[ -]+square feet/g,
+  feet: /[0-9]+[ -]+feet/g,
+  'foot-radius': /[0-9]+[ -]+foot-radius/g,
+  'foot-high': /[0-9]+[ -]+foot-high/g,
+  foot: /[0-9]+[ -]+foot/g,
+  inch: /[0-9]+[ -]+inch/g,
+  gallons: /[0-9]+[ -]+gallons/g,
+  pound: /(between [0-9]+ and )?[0-9]+[ -]pound/g,
 };
 
 const convertToNumeric = (value: number | string) =>
@@ -95,11 +134,12 @@ const convertToNumeric = (value: number | string) =>
 const convertComplexStringUnits = (
   value: string,
   template = imperialToMetric,
+  regexTemplate = unitToRegExp,
 ) =>
   Object.entries(template).reduce(
     (acc, [unit, callback]) =>
-      acc.replace(RegExp(`[0-9]+[ -]+${unit}`, `g`), (value: number | string) =>
-        callback(convertToNumeric(value)).join(''),
+      acc.replace(regexTemplate[unit as Units], (value) =>
+        callback(value).join(''),
       ),
     value,
   );

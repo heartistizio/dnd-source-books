@@ -56,3 +56,18 @@ export interface ItemWithBounds {
     range?: Range;
   };
 }
+
+export type Units =
+  | 'miles'
+  | 'square feet'
+  | 'feet'
+  | 'foot-radius'
+  | 'foot-high'
+  | 'foot'
+  | 'inch'
+  | 'gallons'
+  | 'pound';
+
+export type Converter = (
+  value: string,
+) => [number, string] | [string, number, string, number, string];
