@@ -1,0 +1,6 @@
+{
+  "testMatch": ["**/?(*.)(spec).ts"],
+  "rootDir": "./",
+  "moduleDirectories": ["node_modules", "src"],
+  "preset": "ts-jest"
+}

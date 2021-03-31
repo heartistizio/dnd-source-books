@@ -61,10 +61,10 @@ export type Units =
   | 'miles'
   | 'square feet'
   | 'feet'
-  | 'foot-radius'
-  | 'foot-high'
+  | '-foot'
   | 'foot'
   | 'inch'
+  | 'inches'
   | 'gallons'
   | 'pound';
 
