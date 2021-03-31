@@ -9,6 +9,10 @@ describe('convertWeight', () => {
   it('converts weight from lbs to kg', () => {
     expect(convertWeight(44)).toBe(20);
   });
+
+  it('converts weight from lbs to kg with decimal', () => {
+    expect(convertWeight(40)).toBe(18.2);
+  });
 });
 
 describe('convertTarget', () => {
