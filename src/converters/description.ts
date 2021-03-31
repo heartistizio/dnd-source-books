@@ -1,6 +1,8 @@
 import { Description } from '../types';
 import { convertComplexStringUnits } from './utils';
 
+export const convertName = (name: string) => convertComplexStringUnits(name);
+
 export const convertDescription = ({
   value,
   chat,

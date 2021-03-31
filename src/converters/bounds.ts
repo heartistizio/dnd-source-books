@@ -1,6 +1,9 @@
 import { Bounds, Range } from '../types';
 import { convertSquareFeet, convertFeet } from './utils';
 
+export const convertWeight = (weigth?: number): number | undefined =>
+  weigth ? Math.floor(weigth / 2.2) : weigth;
+
 const convertBounds = (bounds: Bounds): Bounds => {
   const { value, type, ...rest } = bounds;
   if (value === null) {

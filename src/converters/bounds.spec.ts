@@ -1,5 +1,15 @@
 import { Bounds, Range } from '../types';
-import { convertRange, convertTarget } from './bounds';
+import { convertRange, convertTarget, convertWeight } from './bounds';
+
+describe('convertWeight', () => {
+  it('returns undefined for no weight', () => {
+    expect(convertWeight(undefined)).toBeUndefined();
+  });
+
+  it('converts weight from lbs to kg', () => {
+    expect(convertWeight(44)).toBe(20);
+  });
+});
 
 describe('convertTarget', () => {
   const defaultTarget: Bounds = {
