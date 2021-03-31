@@ -7,7 +7,7 @@ const convertBounds = (bounds: Bounds): Bounds => {
     return { value, type, ...rest };
   }
   if (type === 'square feet') {
-    const [convertedValue] = convertSquareFeet(value);
+    const [[convertedValue]] = convertSquareFeet(value);
 
     return {
       ...rest,
@@ -17,7 +17,7 @@ const convertBounds = (bounds: Bounds): Bounds => {
     };
   }
 
-  const [convertedValue] = convertFeet(value);
+  const [[convertedValue]] = convertFeet(value);
 
   return { ...rest, value: convertedValue, units: 'm', type };
 };
@@ -35,7 +35,7 @@ export const convertRange = (range?: Range): Range | undefined => {
     return undefined;
   }
   const { long, ...rest } = range;
-  const convertedLong = long ? convertFeet(long)[0] : null;
+  const convertedLong = long ? convertFeet(long)[0][0] : null;
 
   return {
     ...convertBounds(rest),

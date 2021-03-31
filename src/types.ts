@@ -50,10 +50,12 @@ export interface ItemWithFlagsAndFeatures {
 }
 
 export interface ItemWithBounds {
+  name: string;
   data: {
     description: Description;
     target?: Bounds;
     range?: Range;
+    weight?: number;
   };
 }
 
@@ -68,6 +70,4 @@ export type Units =
   | 'gallons'
   | 'pound';
 
-export type Converter = (
-  value: string,
-) => [number, string] | [string, number, string, number, string];
+export type Converter = (value: string) => [(number | string)[], string];

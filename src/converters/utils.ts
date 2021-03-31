@@ -1,8 +1,11 @@
 import { Units, Converter } from '../types';
 
-const convertMiles = (value: string): [number, string] => [
-  convertToNumeric(value) * 1.5,
-  ' kilometers',
+const convertToNumeric = (value: number | string) =>
+  typeof value === 'string' ? parseInt(value.replace(/ /g, '')) : value;
+
+const convertMiles = (value: string): [[number, string], string] => [
+  [convertToNumeric(value) * 1.5, 'kilometers'],
+  ' ',
 ];
 
 const specialValuesMap: Record<string, number> = {
@@ -14,39 +17,44 @@ const specialValuesMap: Record<string, number> = {
 const convertSpecialFeetValuesToMeters = (
   value: number,
   radial: boolean,
-  numberSeperator = '',
+  numberSeperator: string,
   template = specialValuesMap,
-) => [
-  specialValuesMap[String(value)],
-  numberSeperator,
-  radial ? `meter` : ' meter',
+): [[number, string, string], string] => [
+  [template[String(value)], numberSeperator, 'meter'],
+  radial ? '' : ' ',
 ];
 
 const convertFeetToMeters = (
   value: number,
   radial: boolean,
   numberSeperator: string,
-) => {
+): [[number, string, string], string] => {
   const specialValue = convertSpecialFeetValuesToMeters(
     value,
     radial,
     numberSeperator,
   );
 
-  if (specialValue[0]) {
+  if (specialValue[0][0]) {
     return specialValue;
   }
 
   const convertedValue = Math.ceil(value / 5) * 1.5;
-  const unit = radial ? `meter` : ' meters';
-  return [convertedValue, numberSeperator, unit];
+
+  return [
+    [convertedValue, numberSeperator, radial ? 'meter' : 'meters'],
+    radial ? '' : ' ',
+  ];
 };
 
 const convertFeetToCentimeters = (
   value: number,
   radial: boolean,
   numberSeperator: string,
-) => [value * 30, numberSeperator, radial ? `centimeter` : ' centimeters'];
+): [[number, string, string], string] => [
+  [value * 30, numberSeperator, radial ? 'centimeter' : 'centimeters'],
+  radial ? '' : ' ',
+];
 
 export const convertFeet = (
   value: number,
@@ -57,19 +65,20 @@ export const convertFeet = (
     ? convertFeetToMeters(value, radial, numberSeperator)
     : convertFeetToCentimeters(value, radial, numberSeperator);
 
-export const convertSquareFeet = (value: string | number): [number, string] => [
-  convertToNumeric(value) / 10,
-  ' square meters',
+export const convertSquareFeet = (
+  value: string | number,
+): [[number, string], string] => [
+  [convertToNumeric(value) / 10, 'square meters'],
+  ' ',
 ];
 
-const convertInches = (value: string): [number, string] => [
-  convertToNumeric(value) * 2.5,
-  ' centimeters',
+const convertInches = (value: string): [[number, string], string] => [
+  [convertToNumeric(value) * 2.5, 'centimeters'],
+  ' ',
 ];
-
-const convertGallons = (value: string): [number, string] => [
-  convertToNumeric(value) * 4,
-  ' liters',
+const convertGallons = (value: string): [[number, string], string] => [
+  [convertToNumeric(value) * 4, 'liters'],
+  ' ',
 ];
 
 const convertTupleToNumeric = (value: string) =>
@@ -78,20 +87,21 @@ const convertTupleToNumeric = (value: string) =>
     .map((value) => parseInt(value))
     .filter((element) => !isNaN(element));
 
-const convertTuplePounds = (
-  value: string,
-): [number, string] | [string, number, string, number, string] => {
+const convertTuplePounds = (value: string): [(number | string)[], string] => {
   const [first, second] = convertTupleToNumeric(value);
 
-  return second
-    ? [
-        'between ',
-        Math.floor(convertToNumeric(first) / 2.2),
-        ' and ',
-        Math.floor(convertToNumeric(second) / 2.2),
-        ' kilogram',
-      ]
-    : [Math.floor(convertToNumeric(first) / 2.2), ' kilogram'];
+  return [
+    second
+      ? [
+          'between',
+          Math.floor(convertToNumeric(first) / 2.2),
+          'and',
+          Math.floor(convertToNumeric(second) / 2.2),
+          'kilogram',
+        ]
+      : [Math.floor(convertToNumeric(first) / 2.2), 'kilogram'],
+    ' ',
+  ];
 };
 
 const imperialToMetric: Record<Units, any> = {
@@ -118,8 +128,11 @@ const unitToRegExp: Record<Units, RegExp> = {
   pound: /(between [0-9]+ and )?[0-9]+[ -]pound/g,
 };
 
-const convertToNumeric = (value: number | string) =>
-  typeof value === 'string' ? parseInt(value.replace(/ /g, '')) : value;
+const handleConversionCalback = (value: string, callback: Converter) => {
+  const [result, separator = ''] = callback(value);
+
+  return result.filter(Boolean).join(separator);
+};
 
 export const convertComplexStringUnits = (
   value: string,
@@ -129,7 +142,7 @@ export const convertComplexStringUnits = (
   Object.entries(template).reduce(
     (acc, [unit, callback]) =>
       acc.replace(regexTemplate[unit as Units], (value) =>
-        callback(value).join(''),
+        handleConversionCalback(value, callback),
       ),
     value,
   );
