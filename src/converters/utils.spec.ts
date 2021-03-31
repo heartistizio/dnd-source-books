@@ -148,6 +148,10 @@ describe('convertComplexStringUnits', () => {
       process.env.VEGANIZE = 'true';
     });
 
+    afterAll(() => {
+      process.env.VEGANIZE = originalProcessEnvVeganize;
+    });
+
     it('veganizes leather', () => {
       const description = 'It is leather.';
 

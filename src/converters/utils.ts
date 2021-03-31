@@ -118,8 +118,8 @@ const imperialToMetric: Record<Units, any> = {
 
 const veganizedTemplate = {
   ...imperialToMetric,
-  leather: (value: string) => [[' vegan', value], ''],
-  Leather: (value: string) => [[' Vegan', value], ''],
+  leather: (value: string) => [['vegan', value], ' '],
+  Leather: (value: string) => [['Vegan', value], ' '],
 };
 
 const unitToRegExp: Record<Units, RegExp> = {
@@ -136,8 +136,8 @@ const unitToRegExp: Record<Units, RegExp> = {
 
 const veganizedUnitToRegExp = {
   ...unitToRegExp,
-  leather: / leather/g,
-  Leather: / Leather/g,
+  leather: /leather/g,
+  Leather: /Leather/g,
 };
 
 const handleConversionCalback = (value: string, callback: Converter) => {
