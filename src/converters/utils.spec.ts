@@ -140,4 +140,28 @@ describe('convertComplexStringUnits', () => {
       );
     });
   });
+
+  describe('if process.env.VEGANIZE is set to true', () => {
+    const originalProcessEnvVeganize = process.env.VEGANIZE;
+
+    beforeEach(() => {
+      process.env.VEGANIZE = 'true';
+    });
+
+    it('veganizes leather', () => {
+      const description = 'It is leather.';
+
+      const convertedDescription = convertComplexStringUnits(description);
+
+      expect(convertedDescription).toEqual('It is vegan leather.');
+    });
+
+    it('veganizes capital Leather', () => {
+      const description = 'It is Leather.';
+
+      const convertedDescription = convertComplexStringUnits(description);
+
+      expect(convertedDescription).toEqual('It is Vegan Leather.');
+    });
+  });
 });

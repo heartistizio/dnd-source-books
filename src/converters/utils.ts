@@ -116,6 +116,12 @@ const imperialToMetric: Record<Units, any> = {
   pound: convertTuplePounds,
 };
 
+const veganizedTemplate = {
+  ...imperialToMetric,
+  leather: (value: string) => [[' vegan', value], ''],
+  Leather: (value: string) => [[' Vegan', value], ''],
+};
+
 const unitToRegExp: Record<Units, RegExp> = {
   miles: /[0-9]+[ -]+miles/g,
   'square feet': /[0-9]+( [0-9]+)[ -]+square feet/g,
@@ -128,6 +134,12 @@ const unitToRegExp: Record<Units, RegExp> = {
   pound: /(between [0-9]+ and )?[0-9]+[ -]pound/g,
 };
 
+const veganizedUnitToRegExp = {
+  ...unitToRegExp,
+  leather: / leather/g,
+  Leather: / Leather/g,
+};
+
 const handleConversionCalback = (value: string, callback: Converter) => {
   const [result, separator = ''] = callback(value);
 
@@ -136,8 +148,12 @@ const handleConversionCalback = (value: string, callback: Converter) => {
 
 export const convertComplexStringUnits = (
   value: string,
-  template = imperialToMetric,
-  regexTemplate = unitToRegExp,
+  template = process.env.VEGANIZE === 'true'
+    ? veganizedTemplate
+    : imperialToMetric,
+  regexTemplate = process.env.VEGANIZE === 'true'
+    ? veganizedUnitToRegExp
+    : unitToRegExp,
 ) =>
   Object.entries(template).reduce(
     (acc, [unit, callback]) =>
